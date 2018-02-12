@@ -15,6 +15,8 @@ void free(void *ptr)
 
   struct metadata *free = ptr;
 
+  // Just change the value of the block's metadata in order to let malloc use it
+
   free--;
   free->state = FREE;
 }

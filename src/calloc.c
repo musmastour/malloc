@@ -10,6 +10,8 @@
 __attribute__((__visibility__("default")))
 void *calloc(size_t number, size_t size)
 {
+// Using malloc function and memset to set all value to zero
+
   size_t alloc = number * size;
 
   if (alloc / size != number)

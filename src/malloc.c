@@ -33,9 +33,9 @@ struct metadata *init_first_block(size_t size)
   if (ptr == MAP_FAILED)
     return NULL;
 
-  g_first_block = ptr;
+  g_first_block = ptr; // the page mmaped will be our first free block
   g_first_block->state = FREE;
-  g_first_block->size = nb_pages * PAGESIZE - sizeof(struct metadata);
+  g_first_block->size = nb_pages * PAGESIZE - sizeof(struct metadata); //  
 
   return g_first_block;
 }
@@ -43,7 +43,7 @@ struct metadata *init_first_block(size_t size)
 struct metadata *extend_memory(size_t size, struct metadata *block)
 {
   while (block->next)
-    block = block->next;
+    block = block->next; // Go to the last block
 
   struct metadata *last = block;
   size_t nb_pages = nb_page_to_allocate(size);
@@ -57,7 +57,7 @@ struct metadata *extend_memory(size_t size, struct metadata *block)
   if (ptr == MAP_FAILED)
     return NULL;
 
-  last->next = ptr;
+  last->next = ptr; // We allocate a new page and link it with the preview's one
   last->next->state = FREE;
   last->next->next = NULL;
   last->next->size = nb_pages * PAGESIZE - sizeof(struct metadata);
@@ -67,20 +67,24 @@ struct metadata *extend_memory(size_t size, struct metadata *block)
 
 void create_next_block(struct metadata *block, size_t size)
 {
+  // If we want to add a new free block after an used block we have to check
+  // if there is still some memory for metadata and the more little blocksize
+
   struct metadata *new = block;
   size_t tmp_size = block->size;
   
   block->state = USED;
   block->size = size;
   
+  // Creation of the new block and its metadata
+
   new++;
   new = cast(new, size);
   new->state = FREE;
   new->size = tmp_size - size - sizeof(struct metadata);
   new->next = block->next;
-  
-  block->next = new;
 
+  block->next = new;
 }
 
 struct metadata *search_free_memory(size_t size)
@@ -100,6 +104,8 @@ struct metadata *search_free_memory(size_t size)
 
     else if (block->state == FREE && size <= block->size)
     {
+      // We can't create a new free block so we just return the block
+    
       block->state = USED;
       return block;
     }
@@ -107,21 +113,25 @@ struct metadata *search_free_memory(size_t size)
     else
     {
       if (!block->next)
+      {
+        //There is no block enought great to stock the size wanted
         block = extend_memory(size, block);
-
+      }
       if (!block)
         return NULL;
 
       block = block->next;
     }
 
-  }while (block != NULL);
+  } while (block != NULL);
 
   return NULL;
 }
 
 size_t change_size(size_t size)
 {
+  // Our blocks have modulo sizeof(size_t) size
+
   if (size % sizeof(size_t) == 0)
     return size;
 
