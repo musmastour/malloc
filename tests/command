@@ -1,0 +1,15 @@
+ls
+ls -l
+ls -lt
+ls -ltr
+cat ../Makefile
+od libmalloc.so
+ip a
+find
+find ..
+find ../..
+tree
+tree ..
+tree ../..
+git status
+less ../Makefile

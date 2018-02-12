@@ -1,0 +1,58 @@
+------------------------------- ## README ## ----------------------------------
+
+
+How to compile : make (in order to generate a library called libmalloc.so)
+                 LD_PRELOAD=./libmalloc.so "program to run"
+
+The malloc() function allocates the number of bytes given in argument
+and returns a pointer to the allocated memory. This memory is not initialized.
+
+The calloc() function do the same thing as malloc. The difference is that 
+the memory is set to zero.
+
+The realloc() function changes the size of the memory space pointed by the
+pointer given and reallocate as bytes as given in argument.
+
+All the memory allocated by one of those function has to be freed by
+the function free().
+
+
+-------------------
+## EXPLANATION ##
+
+-- malloc --
+
+Strategy used: First fit
+
+When I call malloc, I check all the blocks from the first block and check
+if the current block is free and its size is enought great to return this block
+
+If any block can be returned, I create a new page enought great to stock the
+size wanted by the user inside and I link this page with previous one
+
+My blocks are represented by a linked list and they are described by metadata
+with the state and the size of the block
+
+-- free --
+
+I read the metadata of the pointer in parameter and switch its state as FREE
+
+-- realloc --
+
+If the size of the current block can stock the new size, I just extend the size
+block, else, I free this block and search another block with malloc, but I
+stock the data on the previous block in order th copy them on the new block 
+with memcpy
+
+-- calloc--
+
+Calloc just use malloc and memset to initialize the data to zero
+
+
+------------------
+## TESTSUITE ##
+
+To run the testsuite, just use : make test
+If you want to add some test, add the test you want on the file named "command"
+
+-----------------

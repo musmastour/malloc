@@ -1,0 +1,32 @@
+          ## TODO ##
+
+
+
+- implement malloc : DONE
+
+  - initialize all the macroconstante and structures --> done
+  - implement first-fit --> done
+  - extend memory when full page --> done
+  
+- implement free : DONE
+  
+  - think about strategy -> done
+  - implement the free function -> done 
+
+- implement calloc : DONE
+
+- implement realloc : Working on
+
+  - think about strategy -> done
+  - implement the function -> done
+  - fix error Killed -> working on
+
+-- optimization : canceled
+
+  - implement a free list : canceled
+  - implement bucket : canceled
+
+-- documentation : DONE
+  
+  - finish README -> done
+  - finish TODO -> done
